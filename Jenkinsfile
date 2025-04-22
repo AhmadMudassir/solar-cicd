@@ -17,21 +17,22 @@ pipeline {
         } 
 
         stage ('Dependency Scanning') {
-                stage ('NPM Dependency Audit') {
-                    steps {
-                        sh 'npm audit --audit-level=critical'
+        parallel {
+            stage ('NPM Dependency Audit') {
+                        steps {
+                            sh 'npm audit --audit-level=critical'
+                        }
                     }
-                }
             }
 
-        stage ('Unit Testing') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'mongo_creds', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
-                    sh 'npm test'
+            stage ('Unit Testing') {
+                steps {
+                    withCredentials([usernamePassword(credentialsId: 'mongo_creds', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+                        sh 'npm test'
+                    }
                 }
-            }
-            
-        }     
-        
+                
+            }     
+        } 
     }
 }
