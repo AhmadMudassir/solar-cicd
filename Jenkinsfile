@@ -40,9 +40,9 @@ pipeline {
 
         stage('Building & Deploying Applicaton') {
             steps {
-                    sh 'docker build -t solar-system .' || true 
-                    sh 'docker stop solar-system' || true
-                    sh 'docker rm solar-system' || true
+                    sh 'docker build -t solar-system . || true ' 
+                    sh 'docker stop solar-system || true '
+                    sh 'docker rm solar-system || true ' 
                     sh 'docker run -d -p 3000:3000 --name solar-system solar-system'
             }
         }
