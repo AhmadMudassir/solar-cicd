@@ -4,15 +4,30 @@ pipeline {
         nodejs 'node-22-14-0'
     }
     stages {
-        stage ('install dep') {
+        stage ('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh 'npm install --no-audit'
             }
             
         } 
-        stage ('start server') {
-            steps {
-                sh 'npm start'
+
+        stage ('Dependency Scanning') {
+            parallel {
+                stage ('NPM Dependency Audit') {
+                    steps {
+                        sh 'npm audit --audit-level=critical'
+                    }
+                }
+
+                stage ('OWASP Depenedency Check') {
+                    steps {
+                        dependencyCheck additionalArguments; '''
+                            --scan \'./\'
+                            --out \'./\'
+                            --format \'All\'
+                            --prettyPrint''', odcInstallation: 'OWASP-DepCheck-12'
+                    }
+                }
             }
         }
     }
