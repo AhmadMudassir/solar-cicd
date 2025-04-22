@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        MONGO_URI=mongodb+srv://cluster0.tf6bj.mongodb.net/
+        MONGO_URI='mongodb+srv://cluster0.tf6bj.mongodb.net/'
     }
 
     tools {
