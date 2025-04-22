@@ -6,7 +6,6 @@ pipeline {
                 sh 'npm install'
             }
         } 
-
         stage ('start server') {
             steps {
                 sh 'npm start'
