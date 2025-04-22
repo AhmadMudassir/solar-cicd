@@ -1,12 +1,16 @@
 pipeline {
-    agents any
+    agent any
     stages {
         stage ('install dep') {
-            sh 'npm install'
+            steps {
+                sh 'npm install'
+            }
         } 
 
         stage ('start server') {
-            sh 'npm start'
+            steps {
+                sh 'npm start'
+            }
         }
     }
 
