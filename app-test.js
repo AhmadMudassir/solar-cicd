@@ -63,10 +63,7 @@ describe('Testing Other Endpoints', () => {
       .get('/os')
       .end((err, res) => {
         res.should.have.status(200);
-        res.body.should.have.property('platform');
-        res.body.should.have.property('arch');
-        res.body.should.have.property('cpus');
-        res.body.should.have.property('uptime');
+        res.body.should.have.property('os');
         done();
       });
   });
