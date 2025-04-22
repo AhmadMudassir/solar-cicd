@@ -19,12 +19,12 @@ pipeline {
                     }
                 }
 
-                stage ('OWASP Depenedency Check') {
+                stage ('OWASP Dependency Check') {
                     steps {
-                        dependencyCheck additionalArguments: '''
-                            --scan \'./\'
-                            --out \'./\'
-                            --format \'All\'
+                         dependencyCheck additionalArguments: '''
+                            --scan './'
+                            --out './'
+                            --format 'All'
                             --prettyPrint''', odcInstallation: 'OWASP-DepCheck-12'
                     }
                 }
