@@ -37,5 +37,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Building & Deploying Applicaton') {
+            steps {
+                    sh 'docker build -t solar-system .'
+                    sh 'docker stop solar-system'
+                    sh 'docker rm solar-system'
+                    sh 'docker run -d -p 3000:3000 --name solar-system solar-system'
+            }
+        }
     }
 }

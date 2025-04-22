@@ -58,10 +58,7 @@ app.get('/', async (req, res) => {
 // GET endpoint to fetch OS details
 app.get('/os', (req, res) => {
     res.json({
-        platform: OS.platform(),
-        arch: OS.arch(),
-        cpus: OS.cpus().length,
-        uptime: OS.uptime()
+           "os": OS.hostname()
     });
 });
 
