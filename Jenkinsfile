@@ -1,5 +1,10 @@
 pipeline {
     agent any
+
+    environment {
+        MONGO_URI=mongodb+srv://cluster0.tf6bj.mongodb.net/
+    }
+
     tools {
         nodejs 'node-22-14-0'
     }
@@ -18,5 +23,15 @@ pipeline {
                     }
                 }
             }
-        }
+
+        stage ('Unit Testing') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'mongo_creds', passwordVariable: 'MONGO_PASSWORD', usernameVariable: 'MONGO_USERNAME')]) {
+                    sh 'npm test'
+                }
+            }
+            
+        }     
+        
+    }
 }
