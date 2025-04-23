@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         MONGO_URI = 'mongodb+srv://cluster0.tf6bj.mongodb.net/'
+        MONGO     = credentials('mongo_creds')
+        DOCKER_REGISTRY     = credentials('dockerhub_keys')
     }
 
     tools {
@@ -28,8 +30,8 @@ pipeline {
                     steps {
                         withCredentials([usernamePassword(
                             credentialsId: 'mongo_creds',
-                            usernameVariable: 'MONGO_USERNAME',
-                            passwordVariable: 'MONGO_PASSWORD'
+                            usernameVariable: 'MONGO_USR',
+                            passwordVariable: 'MONGO_PSW'
                         )]) {
                             sh 'npm test'
                         }
@@ -49,8 +51,8 @@ pipeline {
         
         // stage('Docker Push') {
         //   steps {
-        //     withCredentials([usernamePassword(credentialsId: 'dockerhub_keys', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
-        //       sh "docker login -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PWD}"
+        //     withCredentials([usernamePassword(credentialsId: 'dockerhub_keys', passwordVariable: 'DOCKER_REGISTRY_PSW', usernameVariable: 'DOCKER_REGISTRY_USR')]) {
+        //       sh "docker login -u ${DOCKER_REGISTRY_USR} -p ${DOCKER_REGISTRY_PSW}"
         //       sh 'docker push ahmadmudassir/solar-system:${env.BUILD_NUMBER}'
         //     }
         //   }
