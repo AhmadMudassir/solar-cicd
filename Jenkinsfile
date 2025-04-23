@@ -41,10 +41,19 @@ pipeline {
         stage('Building & Deploying Applicaton') {
             steps {
                     sh 'docker build -t solar-system . || true ' 
+                    sh 'docker tag solar-system ahmadmudassir/solar-system:${env.BUILD_NUMBER} || true ' 
                     sh 'docker stop solar-system || true '
                     sh 'docker rm solar-system || true ' 
-                    sh 'docker run -d -p 3000:3000 --name solar-system solar-system'
             }
+        }
+        
+        stage('Docker Push') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'docker_key', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+              sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+              sh 'docker push ahmadmudassir/solar-system:${env.BUILD_NUMBER}'
+            }
+          }
         }
     }
 }
