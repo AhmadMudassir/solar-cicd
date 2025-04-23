@@ -41,9 +41,9 @@ pipeline {
         stage('Building Applicaton') {
             steps {
                  withDockerRegistry(credentialsId: 'docker_creds', url: 'https://registry.hub.docker.com') {
-                    sh 'docker build -t solar-system .'
-                    sh 'docker tag solar-system demo/solar-system:$BUILD_NUMBER'
-                    sh 'sudo docker image push demo/solar-system:$BUILD_NUMBER'
+                    sh 'docker build -t solarimage .'
+                    sh 'docker tag solarimage ahmadmudassir/solarimage:$BUILD_NUMBER'
+                    sh 'sudo docker image push ahmadmudassir/solarimage:$BUILD_NUMBER'
             }
         }
             }
