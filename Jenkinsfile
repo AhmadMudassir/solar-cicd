@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         MONGO_URI = 'mongodb+srv://cluster0.tf6bj.mongodb.net/'
+        MONGO_USERNAME = credentials('mongo_creds_USR')
+        MONGO_PASSWORD = credentials('mongo_creds_PSW')
     }
 
     tools {
@@ -60,7 +62,7 @@ pipeline {
         
         stage('Deploying Application') {
             steps {
-                    sh 'docker run -p 3000:3000  -d --name solar-container ahmadmudassir/solar-system:$BUILD_NUMBER'
+                    sh 'docker run -p 3000:3000  -d  -e MONGO_USERNAME=$MONGO_USERNAME -e MONGO_PASSWORD=$MONGO_PASSWORD  -e MONGO_URI=$MONGO_URI --name solar-container ahmadmudassir/solar-system:$BUILD_NUMBER'
             }
         }
     }
