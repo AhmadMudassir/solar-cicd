@@ -40,7 +40,8 @@ pipeline {
 
         stage('Building Applicaton') {
             steps {
-                sh 'docker build -t ahmadmudassir/solar-system:$BUILD_NUMBER .'
+                sh 'docker build -t solar-system .'
+                sh 'docker tag solar-system ahmadmudassir/solar-system:$BUILD_NUMBER'
             }
         }
 
