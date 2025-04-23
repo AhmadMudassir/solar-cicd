@@ -40,11 +40,13 @@ pipeline {
 
         stage('Building Applicaton') {
             steps {
-                 withDockerRegistry(credentialsId: 'docker_creds', url: 'https://registry.hub.docker.com') {
+                 withCredentials([usernamePassword(credentialsId: 'docker_creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     sh 'docker build -t solarimage .'
-                    sh 'docker tag solarimage ahmadmudassir/solarimage:$BUILD_NUMBER'
-                    sh 'sudo docker image push ahmadmudassir/solarimage:$BUILD_NUMBER'
-            }
+                    sh 'docker tag solarimage $DOCKER_USERNAME/solarimage:$BUILD_NUMBER'
+                    sh 'docker push $DOCKER_USERNAME/solarimage:$BUILD_NUMBER'
+                }
+
         }
             }
         }
