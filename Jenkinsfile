@@ -47,13 +47,13 @@ pipeline {
             }
         }
         
-        stage('Docker Push') {
-          steps {
-            withCredentials([usernamePassword(credentialsId: 'dockerhub_keys', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
-              sh "docker login -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PWD}"
-              sh 'docker push ahmadmudassir/solar-system:${env.BUILD_NUMBER}'
-            }
-          }
-        }
+        // stage('Docker Push') {
+        //   steps {
+        //     withCredentials([usernamePassword(credentialsId: 'dockerhub_keys', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
+        //       sh "docker login -u ${DOCKER_REGISTRY_USER} -p ${DOCKER_REGISTRY_PWD}"
+        //       sh 'docker push ahmadmudassir/solar-system:${env.BUILD_NUMBER}'
+        //     }
+        //   }
+        // }
     }
 }
