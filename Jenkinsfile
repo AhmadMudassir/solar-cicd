@@ -3,8 +3,7 @@ pipeline {
 
     environment {
         MONGO_URI = 'mongodb+srv://cluster0.tf6bj.mongodb.net/'
-        MONGO     = credentials('mongo_creds')
-        DOCKER_REGISTRY     = credentials('dockerhub_keys')
+        DOCKER_REGISTRY   = credentials('dockerhub_keys')
     }
 
     tools {
@@ -30,8 +29,8 @@ pipeline {
                     steps {
                         withCredentials([usernamePassword(
                             credentialsId: 'mongo_creds',
-                            usernameVariable: 'MONGO_USR',
-                            passwordVariable: 'MONGO_PSW'
+                            usernameVariable: 'MONGO_USERNAME',
+                            passwordVariable: 'MONGO_PASSWORD'
                         )]) {
                             sh 'npm test'
                         }
