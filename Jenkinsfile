@@ -41,7 +41,7 @@ pipeline {
         stage('Building & Deploying Applicaton') {
             steps {
                     sh 'docker build -t solar-system . || true ' 
-                    sh 'docker tag solar-system ahmadmudassir/solar-system:${env.BUILD_NUMBER} || true ' 
+                    // sh 'docker tag solar-system ahmadmudassir/solar-system:${env.BUILD_NUMBER} || true ' 
                     sh 'docker stop solar-system || true '
                     sh 'docker rm solar-system || true ' 
             }
