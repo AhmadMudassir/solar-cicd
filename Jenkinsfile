@@ -37,18 +37,22 @@ pipeline {
                 }
             }
         }
+        
+        stage('Building Application') {
+            steps {
+                    sh 'docker build -t solar-system .'
+                    sh 'docker tag solar-system $DOCKER_USERNAME/solar-system:$BUILD_NUMBER'
+            }
+        }
 
-        stage('Building Applicaton') {
+        stage('Push to Docker') {
             steps {
                  withCredentials([usernamePassword(credentialsId: 'docker_creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                    sh 'docker build -t solarimage .'
-                    sh 'docker tag solarimage $DOCKER_USERNAME/solarimage:$BUILD_NUMBER'
-                    sh 'docker push $DOCKER_USERNAME/solarimage:$BUILD_NUMBER'
+                    sh 'docker push $DOCKER_USERNAME/solar-system:$BUILD_NUMBER'
                 }
-
-        }
             }
         }
     }
+}
 
