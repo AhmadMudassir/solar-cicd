@@ -51,7 +51,7 @@ pipeline {
         stage('Docker Push') {
           steps {
             withCredentials([usernamePassword(credentialsId: 'dockerhub_keys', passwordVariable: 'DOCKER_REGISTRY_PSW', usernameVariable: 'DOCKER_REGISTRY_USR')]) {
-              sh "docker login -u $DOCKER_REGISTRY_USR -p %DOCKER_REGISTRY_PSW%"
+              sh "docker login -u $DOCKER_REGISTRY_USR --password-stdin $DOCKER_REGISTRY_PSW"
               sh 'docker push ahmadmudassir/solar-system:${env.BUILD_NUMBER}'
             }
           }
