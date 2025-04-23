@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         MONGO_URI = 'mongodb+srv://cluster0.tf6bj.mongodb.net/'
-        DOCKER_REGISTRY   = credentials('dockerhub_keys')
     }
 
     tools {
@@ -42,7 +41,7 @@ pipeline {
         stage('Building & Deploying Applicaton') {
             steps {
                     sh 'docker build -t solar-system . || true ' 
-                    sh 'docker tag solar-system ahmadmudassir/solar-system:${env.BUILD_NUMBER} || true ' 
+                    sh 'docker tag solar-system ahmadmudassir/solar-system:$BUILD_NUMBER || true ' 
                     sh 'docker stop solar-system || true '
                     sh 'docker rm solar-system || true ' 
             }
@@ -50,11 +49,11 @@ pipeline {
         
         stage('Docker Push') {
           steps {
-            withCredentials([usernamePassword(credentialsId: 'dockerhub_keys', passwordVariable: 'DOCKER_REGISTRY_PSW', usernameVariable: 'DOCKER_REGISTRY_USR')]) {
-              sh 'docker login -u $DOCKER_REGISTRY_USR --password-stdin'
-              sh 'docker push ahmadmudassir/solar-system:${env.BUILD_NUMBER}'
+              withDockerRegistry(credentialsId: 'dockerhub-keys', url: "https://registry.hub.docker.com") {
+                sh 'docker push ahmadmudassir/solar-system:$BUILD_NUMBER'
+                }
             }
           }
         }
     }
-}
+
