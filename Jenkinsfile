@@ -53,6 +53,12 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploying Application') {
+            steps {
+                    sh 'docker run -p 3000:3000  -d --name solar-container ahmadmudassir/solar-system:$BUILD_NUMBER'
+            }
+        }
     }
 }
 
