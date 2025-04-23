@@ -38,12 +38,9 @@ pipeline {
             }
         }
 
-        stage('Building & Deploying Applicaton') {
+        stage('Building Applicaton') {
             steps {
-                    sh 'docker build -t solar-system . || true ' 
-                    sh 'docker tag solar-system ahmadmudassir/solar-system:$BUILD_NUMBER || true ' 
-                    sh 'docker stop solar-system || true '
-                    sh 'docker rm solar-system || true ' 
+                    sh 'docker build -t ahmadmudassir/solar-system:$BUILD_NUMBER .' 
             }
         }
         
