@@ -47,7 +47,7 @@ pipeline {
 
         stage('Push to Docker') {
             steps {
-                 withCredentials([usernamePassword(credentialsId: 'docker_creds', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                 withCredentials([usernamePassword(credentialsId: 'dockerhub_keys', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                     sh 'docker push $DOCKER_USERNAME/solar-system:$BUILD_NUMBER'
                 }
