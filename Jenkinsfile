@@ -40,17 +40,16 @@ pipeline {
 
         stage('Building Applicaton') {
             steps {
-                    sh 'docker build -t ahmadmudassir/solar-system:$BUILD_NUMBER .' 
+                sh 'docker build -t ahmadmudassir/solar-system:$BUILD_NUMBER .'
             }
         }
-        
+
         stage('Docker Push') {
-          steps {
-              withDockerRegistry(credentialsId: 'dockerhub-keys', url: "https://registry.hub.docker.com") {
-                sh 'docker push ahmadmudassir/solar-system:$BUILD_NUMBER'
+            steps {
+                withDockerRegistry(credentialsId: 'dockerhub-keys', url: "https://registry.hub.docker.com") {
+                    sh 'docker push ahmadmudassir/solar-system:$BUILD_NUMBER'
                 }
             }
-          }
         }
     }
-
+}
