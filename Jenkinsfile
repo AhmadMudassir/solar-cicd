@@ -46,7 +46,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                withDockerRegistry(credentialsId: 'dockerhub_keys', url: "https://registry.hub.docker.com") {
+                withDockerRegistry(credentialsId: 'dockerhub_keys', url: 'docker.io') {
                     sh 'docker push ahmadmudassir/solar-system:$BUILD_NUMBER'
                 }
             }
