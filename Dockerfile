@@ -8,10 +8,6 @@ RUN npm install
 
 COPY . .
 
-ENV MONGO_URI=mongodb+srv://cluster0.tf6bj.mongodb.net/
-ENV MONGO_USERNAME=Ahmad
-ENV MONGO_PASSWORD=pass123
-
 EXPOSE 3000
 
 CMD [ "npm", "start" ]
