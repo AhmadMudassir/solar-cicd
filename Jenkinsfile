@@ -6,9 +6,9 @@ pipeline {
         DOCKER_CONFIG = credentials('dockerhub_keys')
     }
 
-    // tools {
-    //     nodejs 'node-22-14-0'
-    // }
+    tools {
+        nodejs 'node-22-14-0'
+    }
 
     stages {
         stage('Install Dependencies') {
