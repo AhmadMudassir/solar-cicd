@@ -43,6 +43,23 @@ pipeline {
              agent {
                 kubernetes {
                     label 'kaniko-agent'
+                    yaml """
+                        apiVersion: v1
+                        kind: Pod
+                        spec:
+                          containers:
+                          - name: kaniko
+                            image: gcr.io/kaniko-project/executor:latest
+                            command:
+                            - cat
+                            tty: true
+                            volumeMounts:
+                              - name: docker-config
+                                mountPath: /kaniko/.docker
+                          volumes:
+                            - name: docker-config
+                              emptyDir: {}
+                        """
                     defaultContainer 'kaniko'
                 }
             }
