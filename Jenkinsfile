@@ -65,7 +65,7 @@ pipeline {
                       volumes:
                         - name: docker-config
                           secret:
-                            secretName: dockerhub-creds
+                            secretName: dockerhub-secret  // Using your existing secret
                     """
                 }
             }
