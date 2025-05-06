@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         MONGO_URI = 'mongodb+srv://cluster0.tf6bj.mongodb.net/'
+        DOCKER_CONFIG = credentials('dockerhub_keys')
     }
 
     tools {
@@ -38,44 +39,56 @@ pipeline {
             }
         }
         
-        stage('Building Application') {
+        stage('Building Application with Kaniko') {
             steps {
-                    sh 'docker build -t solar-system .'
-                    sh 'docker tag solar-system ahmadmudassir/solar-system:$BUILD_NUMBER'
+                      agent {
+                        kubernetes {
+                            label 'kaniko'
+                            defaultContainer 'kaniko'
+                        }
+                    }
+                    script {
+                    // Using Kaniko executor to build and push the image
+                    container('kaniko') {
+                        sh '''
+                        /kaniko/executor \
+                          --context `pwd` \
+                          --dockerfile `pwd`/Dockerfile \
+                          --destination=ahmadmudassir/solar-system:${BUILD_NUMBER} 
+                        '''
+                    }
+                }
+                    // sh 'docker build -t solar-system .'
+                    // sh 'docker tag solar-system ahmadmudassir/solar-system:$BUILD_NUMBER'
             }
         }
 
-        stage('Push to Docker') {
-            steps {
-                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub_keys',
-                    usernameVariable: 'DOCKER_USERNAME', 
-                    passwordVariable: 'DOCKER_PASSWORD'
-                 )]) {
-                     sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                     sh 'docker push $DOCKER_USERNAME/solar-system:$BUILD_NUMBER'
-                }
-            }
-        }
+        // stage('Push to Docker') {
+        //     steps {
+        //          withCredentials([usernamePassword(
+        //             credentialsId: 'dockerhub_keys',
+        //             usernameVariable: 'DOCKER_USERNAME', 
+        //             passwordVariable: 'DOCKER_PASSWORD'
+        //          )]) {
+        //              sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+        //              sh 'docker push $DOCKER_USERNAME/solar-system:$BUILD_NUMBER'
+        //         }
+        //     }
+        // }
         
-        stage('Deploying Application') {
-            steps {
-                     withCredentials([usernamePassword(
-                    credentialsId: 'mongo_creds',
-                    usernameVariable: 'MONGO_USERNAME',
-                    passwordVariable: 'MONGO_PASSWORD'
-                )]) {
-                    sh '''
-                        docker run -p 3000:3000 -d \
-                        --name solar-container \
-                        -e MONGO_USERNAME=$MONGO_USERNAME \
-                        -e MONGO_PASSWORD=$MONGO_PASSWORD \
-                        -e MONGO_URI=$MONGO_URI \
-                        ahmadmudassir/solar-system:$BUILD_NUMBER
-                    '''
-                }
-            }
-        }
+        // stage('Deploying Application') {
+        //     steps {
+        //              withCredentials([usernamePassword(
+        //             credentialsId: 'mongo_creds',
+        //             usernameVariable: 'MONGO_USERNAME',
+        //             passwordVariable: 'MONGO_PASSWORD'
+        //         )]) {
+        //             sh '''
+        //                 kubectl apply -f k8s-deployment.yaml
+        //             '''
+        //         }
+        //     }
+        // }
     }
 }
 
