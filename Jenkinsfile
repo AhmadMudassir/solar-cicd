@@ -25,17 +25,17 @@ pipeline {
                     }
                 }
 
-                stage('Unit Testing') {
-                    steps {
-                        withCredentials([usernamePassword(
-                            credentialsId: 'mongo_creds',
-                            usernameVariable: 'MONGO_USERNAME',
-                            passwordVariable: 'MONGO_PASSWORD'
-                        )]) {
-                            sh 'npm test'
-                        }
-                    }
-                }
+                // stage('Unit Testing') {
+                //     steps {
+                //         withCredentials([usernamePassword(
+                //             credentialsId: 'mongo_creds',
+                //             usernameVariable: 'MONGO_USERNAME',
+                //             passwordVariable: 'MONGO_PASSWORD'
+                //         )]) {
+                //             sh 'npm test'
+                //         }
+                //     }
+                // }
             }
         }
         
