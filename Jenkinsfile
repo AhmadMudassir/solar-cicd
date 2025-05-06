@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        kubernetes {
-            label 'kaniko-agent'
-            defaultContainer 'kaniko'
-        }
-    }
+    agent any
 
     environment {
         MONGO_URI = 'mongodb+srv://cluster0.tf6bj.mongodb.net/'
@@ -45,26 +40,28 @@ pipeline {
         }
         
         stage('Building Application with Kaniko') {
+             agent {
+                kubernetes {
+                    label 'kaniko-agent'
+                    defaultContainer 'kaniko'
+                }
+            }
             steps {
-                      agent {
-                        kubernetes {
-                            label 'kaniko'
-                            defaultContainer 'kaniko'
-                        }
-                    }
-                    script {
-                    // Using Kaniko executor to build and push the image
-                    container('kaniko') {
+                container('kaniko') {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'dockerhub_keys',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )]) {
                         sh '''
+                        echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(echo -n "$DOCKER_USERNAME:$DOCKER_PASSWORD" | base64)\"}}}" > /kaniko/.docker/config.json
                         /kaniko/executor \
                           --context `pwd` \
                           --dockerfile `pwd`/Dockerfile \
-                          --destination=ahmadmudassir/solar-system:${BUILD_NUMBER} 
+                          --destination=ahmadmudassir/solar-system:${BUILD_NUMBER}
                         '''
                     }
                 }
-                    // sh 'docker build -t solar-system .'
-                    // sh 'docker tag solar-system ahmadmudassir/solar-system:$BUILD_NUMBER'
             }
         }
 
