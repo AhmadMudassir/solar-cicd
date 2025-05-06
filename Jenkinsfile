@@ -43,7 +43,30 @@ pipeline {
              agent {
                 kubernetes {
                     label 'kaniko-agent'
-                    defaultContainer 'kaniko'
+                    defaultContainer 'jnlp'  // Must be jnlp for the agent connection
+                    yaml """
+                    apiVersion: v1
+                    kind: Pod
+                    spec:
+                      containers:
+                      - name: jnlp
+                        image: jenkins/inbound-agent:latest
+                        args: ['-url', 'http://10.0.2.15:8080',
+                               '-tunnel', '10.0.2.15:50000',
+                               '-secret', 'YOUR_AGENT_SECRET',
+                               '-name', 'kaniko-agent']
+                      - name: kaniko
+                        image: gcr.io/kaniko-project/executor:latest
+                        command: ["/busybox/cat"]
+                        tty: true
+                        volumeMounts:
+                          - name: docker-config
+                            mountPath: /kaniko/.docker
+                      volumes:
+                        - name: docker-config
+                          secret:
+                            secretName: dockerhub-creds
+                    """
                 }
             }
             steps {
