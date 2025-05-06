@@ -40,6 +40,12 @@ pipeline {
         }
         
         stage('Building Application with Kaniko') {
+            agent {
+                kubernetes {
+                    label 'kaniko-agent'
+                    defaultContainer 'kaniko'
+                }
+            }
             steps {
                 container('kaniko') {
                     withCredentials([usernamePassword(
