@@ -40,35 +40,6 @@ pipeline {
         }
         
         stage('Building Application with Kaniko') {
-             agent {
-                kubernetes {
-                    label 'kaniko-agent'
-                    defaultContainer 'jnlp'  // Must be jnlp for the agent connection
-                    yaml """
-                    apiVersion: v1
-                    kind: Pod
-                    spec:
-                      containers:
-                      - name: jnlp
-                        image: jenkins/inbound-agent:latest
-                        args: ['-url', 'http://10.0.2.15:8080',
-                               '-tunnel', '10.0.2.15:50000',
-                               '-secret', 'YOUR_AGENT_SECRET',
-                               '-name', 'kaniko-agent']
-                      - name: kaniko
-                        image: gcr.io/kaniko-project/executor:latest
-                        command: ["/busybox/cat"]
-                        tty: true
-                        volumeMounts:
-                          - name: docker-config
-                            mountPath: /kaniko/.docker
-                      volumes:
-                        - name: docker-config
-                          secret:
-                            secretName: dockerhub-secret  // Using your existing secret
-                    """
-                }
-            }
             steps {
                 container('kaniko') {
                     withCredentials([usernamePassword(
@@ -77,7 +48,6 @@ pipeline {
                         passwordVariable: 'DOCKER_PASSWORD'
                     )]) {
                         sh '''
-                        echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"auth\":\"$(echo -n "$DOCKER_USERNAME:$DOCKER_PASSWORD" | base64)\"}}}" > /kaniko/.docker/config.json
                         /kaniko/executor \
                           --context `pwd` \
                           --dockerfile `pwd`/Dockerfile \
